@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "#97c2fc", "id": 2, "label": "\"Madang Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 3, "label": "\"Mount Hagen Kagamuga Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 4, "label": "\"Nadzab Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 5, "label": "\"Port Moresby Jacksons International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 6, "label": "\"Wewak International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 7, "label": "\"Narsarsuaq Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 8, "label": "\"Godthaab / Nuuk Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 9, "label": "\"Kangerlussuaq Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 11, "label": "\"Akureyri Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 12, "label": "\"Egilssta\u00f0ir Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 15, "label": "\"\u00cdsafj\u00f6r\u00f0ur Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 16, "label": "\"Keflavik International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 18, "label": "\"Reykjavik Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 21, "label": "\"Sault Ste Marie Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 24, "label": "\"St. Anthony Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 27, "label": "\"Baie Comeau Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 28, "label": "\"CFB Bagotville\"", "shape": "dot"}, {"color": "#97c2fc", "id": 29, "label": "\"Baker Lake Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 30, "label": "\"Campbell River Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 31, "label": "\"Brandon Municipal Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 32, "label": "\"Cambridge Bay Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 33, "label": "\"Nanaimo Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 34, "label": "\"Castlegar/West Kootenay Regional Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 36, "label": "\"Charlo Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 37, "label": "\"Kugluktuk Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 40, "label": "\"Clyde River Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 41, "label": "\"Coral Harbour Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 45, "label": "\"Deer Lake Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 48, "label": "\"Dawson Creek Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 49, "label": "\"Edmonton International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 50, "label": "\"Arviat Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 54, "label": "\"Inuvik Mike Zubko Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 55, "label": "\"Iqaluit Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 56, "label": "\"Fredericton Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 58, "label": "\"Flin Flon Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 60, "label": "\"Fort Simpson Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 61, "label": "\"Kingston Norman Rogers Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 62, "label": "\"La Grande Rivi\u00e8re Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 63, "label": "\"Gasp\u00e9 (Michel-Pouliot) Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 65, "label": "\"\u00celes-de-la-Madeleine Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 67, "label": "\"Dryden Regional Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 68, "label": "\"Ulukhaktok Holman Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 69, "label": "\"Gjoa Haven Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 70, "label": "\"John C. Munro Hamilton International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 71, "label": "\"Montr\u00e9al / Saint-Hubert Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 72, "label": "\"Hay River / Merlyn Carter Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 73, "label": "\"Halifax / Stanfield International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 75, "label": "\"Pond Inlet Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 77, "label": "\"Stephenville Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 78, "label": "\"Kamloops Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 79, "label": "\"Waterloo Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 80, "label": "\"Schefferville Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 85, "label": "\"Lloydminster Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 87, "label": "\"Kelowna International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 90, "label": "\"Fort McMurray Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 91, "label": "\"Moosonee Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 94, "label": "\"Natashquan Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 99, "label": "\"High Level Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 100, "label": "\"Ottawa Macdonald-Cartier International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 105, "label": "\"Pickle Lake Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 106, "label": "\"Port Menier Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 108, "label": "\"Prince Rupert Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 109, "label": "\"Fort Chipewyan Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 111, "label": "\"Quebec Jean Lesage International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 112, "label": "\"Red Deer Regional Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 113, "label": "\"Windsor Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 115, "label": "\"Kenora Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 116, "label": "\"Lethbridge County Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 117, "label": "\"Greater Moncton International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 119, "label": "\"Comox Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 120, "label": "\"Regina International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 121, "label": "\"Thunder Bay Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 122, "label": "\"Grande Prairie Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 125, "label": "\"Gander International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 126, "label": "\"Sydney / J.A. Douglas McCurdy Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 127, "label": "\"Quesnel Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 132, "label": "\"Rankin Inlet Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 133, "label": "\"Sudbury Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 135, "label": "\"Saint John Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 136, "label": "\"Fort Smith Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 139, "label": "\"Sachs Harbour (David Nasogaluak Jr. Saaryuaq) Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 140, "label": "\"Cape Dorset Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 141, "label": "\"Thompson Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 143, "label": "\"Timmins/Victor M. Power\"", "shape": "dot"}, {"color": "#97c2fc", "id": 144, "label": "\"Billy Bishop Toronto City Centre Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 145, "label": "\"Tuktoyaktuk Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 146, "label": "\"Montreal / Pierre Elliott Trudeau International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 147, "label": "\"Repulse Bay Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 148, "label": "\"Hall Beach Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 149, "label": "\"Rouyn Noranda Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 152, "label": "\"Qikiqtarjuaq Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 153, "label": "\"Val-d\u0027Or Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 154, "label": "\"Kuujjuaq Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 155, "label": "\"Norman Wells Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 156, "label": "\"Vancouver International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 160, "label": "\"Winnipeg / James Armstrong Richardson International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 161, "label": "\"Wabush Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 162, "label": "\"Williams Lake Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 164, "label": "\"Cranbrook/Canadian Rockies International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 166, "label": "\"Saskatoon John G. Diefenbaker International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 167, "label": "\"Medicine Hat Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 168, "label": "\"Fort St John Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 169, "label": "\"Sioux Lookout Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 170, "label": "\"Pangnirtung Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 172, "label": "\"Prince George Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 173, "label": "\"Northwest Regional Airport Terrace-Kitimat\"", "shape": "dot"}, {"color": "#97c2fc", "id": 174, "label": "\"London Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 175, "label": "\"Abbotsford Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 176, "label": "\"Whitehorse / Erik Nielsen International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 177, "label": "\"North Bay Jack Garland Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 178, "label": "\"Calgary International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 179, "label": "\"Smithers Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 180, "label": "\"Fort Nelson Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 181, "label": "\"Penticton Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 182, "label": "\"Charlottetown Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 183, "label": "\"Taloyoak Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 184, "label": "\"Victoria International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 187, "label": "\"Churchill Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 188, "label": "\"Goose Bay Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 189, "label": "\"St. John\u0027s International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 190, "label": "\"Kapuskasing Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 192, "label": "\"Mont Joli Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 193, "label": "\"Lester B. Pearson International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 196, "label": "\"Yellowknife Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 198, "label": "\"Sandspit Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 199, "label": "\"Chris Hadfield Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 200, "label": "\"Port Hardy Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 202, "label": "\"Sept-\u00celes Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 206, "label": "\"Fort Mcpherson Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 209, "label": "\"Soummam Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 210, "label": "\"Houari Boumediene Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 211, "label": "\"Djanet Inedbirene Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 216, "label": "\"Aguenar \u2013 Hadj Bey Akhamok Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 220, "label": "\"Rabah Bitat Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 221, "label": "\"Mohamed Boudiaf International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 222, "label": "\"Cheikh Larbi T\u00e9bessi Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 224, "label": "\"Hassi R\u0027Mel Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 225, "label": "\"Bou Chekif Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 230, "label": "\"Zenata \u2013 Messali El Hadj Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 231, "label": "\"Es Senia Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 233, "label": "\"Ghriss Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 234, "label": "\"Touat Cheikh Sidi Mohamed Belkebir Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 235, "label": "\"Biskra Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 236, "label": "\"El Golea Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 237, "label": "\"Noum\u00e9rat - Moufdi Zakaria Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 238, "label": "\"Oued Irara Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 239, "label": "\"In Salah Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 240, "label": "\"Touggourt Sidi Madhi Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 243, "label": "\"Ain el Beida Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 244, "label": "\"In Am\u00e9nas Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 245, "label": "\"Cadjehoun Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 246, "label": "\"Ouagadougou Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 247, "label": "\"Bobo Dioulasso Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 248, "label": "\"Kotoka International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 249, "label": "\"Tamale Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 251, "label": "\"Sunyani Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 252, "label": "\"Takoradi Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 253, "label": "\"Port Bouet Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 260, "label": "\"Nnamdi Azikiwe International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 262, "label": "\"Benin Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 263, "label": "\"Margaret Ekpo International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 264, "label": "\"Akanu Ibiam International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 266, "label": "\"Ibadan Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 267, "label": "\"Ilorin International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 268, "label": "\"Yakubu Gowon Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 269, "label": "\"Kaduna Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 270, "label": "\"Mallam Aminu International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 273, "label": "\"Murtala Muhammed International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 275, "label": "\"Port Harcourt International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 276, "label": "\"Sadiq Abubakar III International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 277, "label": "\"Yola Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 280, "label": "\"Diori Hamani International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 286, "label": "\"Monastir Habib Bourguiba International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 287, "label": "\"Tunis Carthage International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 290, "label": "\"Gafsa Ksar International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 291, "label": "\"Gab\u00e8s Matmata International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 293, "label": "\"Djerba Zarzis International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 295, "label": "\"Sfax Thyna International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 296, "label": "\"Tozeur Nefta International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 298, "label": "\"Lom\u00e9-Tokoin Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 299, "label": "\"Antwerp International Airport (Deurne)\"", "shape": "dot"}, {"color": "#97c2fc", "id": 302, "label": "\"Brussels Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 304, "label": "\"Brussels South Charleroi Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 309, "label": "\"Li\u00e8ge Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 310, "label": "\"Ostend-Bruges International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 337, "label": "\"Berlin-Sch\u00f6nefeld Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 338, "label": "\"Dresden Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 339, "label": "\"Erfurt Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 340, "label": "\"Frankfurt am Main Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 341, "label": "\"M\u00fcnster Osnabr\u00fcck Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 342, "label": "\"Hamburg Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 344, "label": "\"Cologne Bonn Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 345, "label": "\"D\u00fcsseldorf Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 346, "label": "\"Munich Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 347, "label": "\"Nuremberg Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 348, "label": "\"Leipzig/Halle Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 349, "label": "\"Saarbr\u00fccken Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 350, "label": "\"Stuttgart Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 351, "label": "\"Berlin-Tegel Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 352, "label": "\"Hannover Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 353, "label": "\"Bremen Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 355, "label": "\"Frankfurt-Hahn Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 356, "label": "\"Mannheim-City Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 371, "label": "\"Paderborn Lippstadt Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 373, "label": "\"Dortmund Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 382, "label": "\"Friedrichshafen Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 393, "label": "\"Zweibr\u00fccken Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 410, "label": "\"Westerland Sylt Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 413, "label": "\"Kuressaare Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 415, "label": "\"Lennart Meri Tallinn Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 416, "label": "\"Tartu Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 421, "label": "\"Helsinki Vantaa Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 428, "label": "\"Ivalo Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 429, "label": "\"Joensuu Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 430, "label": "\"Jyvaskyla Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 432, "label": "\"Kemi-Tornio Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 433, "label": "\"Kajaani Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 435, "label": "\"Kokkola-Pietarsaari Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 437, "label": "\"Kuusamo Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 438, "label": "\"Kittil\u00e4 Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 439, "label": "\"Kuopio Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 442, "label": "\"Mariehamn Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 446, "label": "\"Oulu Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 448, "label": "\"Pori Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 453, "label": "\"Rovaniemi Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 455, "label": "\"Savonlinna Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 458, "label": "\"Tampere-Pirkkala Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 460, "label": "\"Turku Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 462, "label": "\"Vaasa Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 465, "label": "\"Belfast International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 467, "label": "\"George Best Belfast City Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 468, "label": "\"City of Derry Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 469, "label": "\"Birmingham International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 478, "label": "\"Manchester Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 481, "label": "\"Newquay Cornwall Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 488, "label": "\"Cardiff International Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 490, "label": "\"Bristol Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 491, "label": "\"Liverpool John Lennon Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 492, "label": "\"London Luton Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 495, "label": "\"Southampton Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 497, "label": "\"Alderney Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 498, "label": "\"Guernsey Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 499, "label": "\"Jersey Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 502, "label": "\"London Gatwick Airport\"", "shape": "dot"}, {"color": "#97c2fc", "id": 503, "label": "\"London City Airport\"", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"from": 253, "to": 247}, {"from": 253, "to": 246}, {"from": 253, "to": 302}, {"from": 253, "to": 245}, {"from": 253, "to": 210}, {"from": 253, "to": 248}, {"from": 253, "to": 298}, {"from": 253, "to": 273}, {"from": 253, "to": 287}, {"from": 247, "to": 246}, {"from": 246, "to": 248}, {"from": 246, "to": 245}, {"from": 246, "to": 298}, {"from": 246, "to": 280}, {"from": 246, "to": 302}, {"from": 246, "to": 210}, {"from": 246, "to": 287}, {"from": 248, "to": 273}, {"from": 248, "to": 298}, {"from": 248, "to": 249}, {"from": 248, "to": 245}, {"from": 248, "to": 340}, {"from": 248, "to": 251}, {"from": 248, "to": 252}, {"from": 248, "to": 260}, {"from": 245, "to": 298}, {"from": 245, "to": 302}, {"from": 245, "to": 273}, {"from": 245, "to": 260}, {"from": 245, "to": 280}, {"from": 298, "to": 260}, {"from": 298, "to": 273}, {"from": 298, "to": 302}, {"from": 280, "to": 210}, {"from": 280, "to": 260}, {"from": 435, "to": 448}, {"from": 435, "to": 421}, {"from": 448, "to": 421}, {"from": 442, "to": 460}, {"from": 442, "to": 421}, {"from": 460, "to": 421}, {"from": 273, "to": 340}, {"from": 273, "to": 275}, {"from": 273, "to": 260}, {"from": 273, "to": 262}, {"from": 273, "to": 263}, {"from": 273, "to": 264}, {"from": 273, "to": 268}, {"from": 273, "to": 269}, {"from": 273, "to": 270}, {"from": 62, "to": 146}, {"from": 146, "to": 111}, {"from": 146, "to": 149}, {"from": 146, "to": 154}, {"from": 146, "to": 302}, {"from": 146, "to": 340}, {"from": 146, "to": 346}, {"from": 146, "to": 27}, {"from": 146, "to": 28}, {"from": 146, "to": 49}, {"from": 146, "to": 56}, {"from": 146, "to": 73}, {"from": 146, "to": 100}, {"from": 146, "to": 117}, {"from": 146, "to": 135}, {"from": 146, "to": 144}, {"from": 146, "to": 153}, {"from": 146, "to": 156}, {"from": 146, "to": 160}, {"from": 146, "to": 178}, {"from": 146, "to": 182}, {"from": 146, "to": 189}, {"from": 146, "to": 192}, {"from": 146, "to": 193}, {"from": 146, "to": 202}, {"from": 146, "to": 210}, {"from": 146, "to": 287}, {"from": 146, "to": 161}, {"from": 146, "to": 502}, {"from": 80, "to": 111}, {"from": 80, "to": 154}, {"from": 80, "to": 161}, {"from": 80, "to": 202}, {"from": 111, "to": 63}, {"from": 111, "to": 100}, {"from": 111, "to": 193}, {"from": 111, "to": 202}, {"from": 111, "to": 27}, {"from": 111, "to": 28}, {"from": 111, "to": 65}, {"from": 111, "to": 71}, {"from": 111, "to": 161}, {"from": 111, "to": 192}, {"from": 111, "to": 144}, {"from": 154, "to": 55}, {"from": 161, "to": 202}, {"from": 161, "to": 188}, {"from": 161, "to": 27}, {"from": 161, "to": 28}, {"from": 161, "to": 36}, {"from": 161, "to": 192}, {"from": 202, "to": 28}, {"from": 202, "to": 71}, {"from": 202, "to": 192}, {"from": 202, "to": 94}, {"from": 202, "to": 106}, {"from": 149, "to": 153}, {"from": 345, "to": 382}, {"from": 345, "to": 488}, {"from": 345, "to": 338}, {"from": 345, "to": 348}, {"from": 345, "to": 481}, {"from": 345, "to": 347}, {"from": 345, "to": 293}, {"from": 345, "to": 498}, {"from": 345, "to": 410}, {"from": 345, "to": 342}, {"from": 345, "to": 421}, {"from": 345, "to": 499}, {"from": 345, "to": 346}, {"from": 345, "to": 350}, {"from": 345, "to": 351}, {"from": 345, "to": 503}, {"from": 345, "to": 469}, {"from": 345, "to": 478}, {"from": 345, "to": 340}, {"from": 345, "to": 287}, {"from": 345, "to": 502}, {"from": 382, "to": 342}, {"from": 382, "to": 351}, {"from": 382, "to": 344}, {"from": 382, "to": 340}, {"from": 342, "to": 469}, {"from": 342, "to": 344}, {"from": 342, "to": 478}, {"from": 342, "to": 347}, {"from": 342, "to": 350}, {"from": 342, "to": 410}, {"from": 342, "to": 421}, {"from": 342, "to": 346}, {"from": 342, "to": 490}, {"from": 342, "to": 349}, {"from": 342, "to": 302}, {"from": 342, "to": 340}, {"from": 342, "to": 293}, {"from": 342, "to": 502}, {"from": 342, "to": 492}, {"from": 351, "to": 469}, {"from": 351, "to": 344}, {"from": 351, "to": 421}, {"from": 351, "to": 347}, {"from": 351, "to": 350}, {"from": 351, "to": 340}, {"from": 351, "to": 410}, {"from": 351, "to": 346}, {"from": 351, "to": 349}, {"from": 351, "to": 302}, {"from": 351, "to": 356}, {"from": 49, "to": 176}, {"from": 49, "to": 178}, {"from": 49, "to": 196}, {"from": 49, "to": 99}, {"from": 49, "to": 168}, {"from": 49, "to": 90}, {"from": 49, "to": 100}, {"from": 49, "to": 120}, {"from": 49, "to": 122}, {"from": 49, "to": 156}, {"from": 49, "to": 160}, {"from": 49, "to": 166}, {"from": 49, "to": 193}, {"from": 49, "to": 16}, {"from": 49, "to": 72}, {"from": 49, "to": 136}, {"from": 49, "to": 70}, {"from": 49, "to": 87}, {"from": 49, "to": 119}, {"from": 49, "to": 175}, {"from": 49, "to": 184}, {"from": 176, "to": 87}, {"from": 176, "to": 156}, {"from": 176, "to": 178}, {"from": 176, "to": 196}, {"from": 87, "to": 156}, {"from": 87, "to": 164}, {"from": 87, "to": 172}, {"from": 87, "to": 178}, {"from": 87, "to": 112}, {"from": 87, "to": 184}, {"from": 87, "to": 193}, {"from": 156, "to": 30}, {"from": 156, "to": 119}, {"from": 156, "to": 162}, {"from": 156, "to": 164}, {"from": 156, "to": 184}, {"from": 156, "to": 200}, {"from": 156, "to": 48}, {"from": 156, "to": 78}, {"from": 156, "to": 127}, {"from": 156, "to": 340}, {"from": 156, "to": 346}, {"from": 156, "to": 33}, {"from": 156, "to": 34}, {"from": 156, "to": 90}, {"from": 156, "to": 100}, {"from": 156, "to": 108}, {"from": 156, "to": 120}, {"from": 156, "to": 160}, {"from": 156, "to": 166}, {"from": 156, "to": 168}, {"from": 156, "to": 172}, {"from": 156, "to": 173}, {"from": 156, "to": 178}, {"from": 156, "to": 179}, {"from": 156, "to": 181}, {"from": 156, "to": 193}, {"from": 156, "to": 198}, {"from": 156, "to": 502}, {"from": 156, "to": 478}, {"from": 100, "to": 196}, {"from": 100, "to": 55}, {"from": 100, "to": 340}, {"from": 100, "to": 56}, {"from": 100, "to": 73}, {"from": 100, "to": 117}, {"from": 100, "to": 160}, {"from": 100, "to": 174}, {"from": 100, "to": 178}, {"from": 100, "to": 189}, {"from": 100, "to": 193}, {"from": 100, "to": 144}, {"from": 196, "to": 32}, {"from": 196, "to": 37}, {"from": 196, "to": 69}, {"from": 196, "to": 132}, {"from": 196, "to": 155}, {"from": 196, "to": 183}, {"from": 196, "to": 60}, {"from": 196, "to": 72}, {"from": 196, "to": 178}, {"from": 196, "to": 136}, {"from": 178, "to": 85}, {"from": 178, "to": 172}, {"from": 178, "to": 340}, {"from": 178, "to": 34}, {"from": 178, "to": 78}, {"from": 178, "to": 90}, {"from": 178, "to": 112}, {"from": 178, "to": 116}, {"from": 178, "to": 120}, {"from": 178, "to": 122}, {"from": 178, "to": 160}, {"from": 178, "to": 164}, {"from": 178, "to": 166}, {"from": 178, "to": 167}, {"from": 178, "to": 184}, {"from": 178, "to": 193}, {"from": 178, "to": 502}, {"from": 178, "to": 478}, {"from": 178, "to": 31}, {"from": 178, "to": 33}, {"from": 178, "to": 70}, {"from": 178, "to": 73}, {"from": 178, "to": 79}, {"from": 178, "to": 113}, {"from": 178, "to": 119}, {"from": 178, "to": 168}, {"from": 178, "to": 174}, {"from": 178, "to": 175}, {"from": 210, "to": 344}, {"from": 210, "to": 220}, {"from": 210, "to": 234}, {"from": 210, "to": 209}, {"from": 210, "to": 302}, {"from": 210, "to": 235}, {"from": 210, "to": 221}, {"from": 210, "to": 211}, {"from": 210, "to": 340}, {"from": 210, "to": 237}, {"from": 210, "to": 238}, {"from": 210, "to": 224}, {"from": 210, "to": 239}, {"from": 210, "to": 233}, {"from": 210, "to": 243}, {"from": 210, "to": 231}, {"from": 210, "to": 222}, {"from": 210, "to": 240}, {"from": 210, "to": 225}, {"from": 210, "to": 230}, {"from": 210, "to": 287}, {"from": 210, "to": 216}, {"from": 210, "to": 502}, {"from": 344, "to": 338}, {"from": 344, "to": 348}, {"from": 344, "to": 478}, {"from": 344, "to": 287}, {"from": 344, "to": 346}, {"from": 344, "to": 469}, {"from": 344, "to": 502}, {"from": 469, "to": 467}, {"from": 469, "to": 498}, {"from": 469, "to": 352}, {"from": 469, "to": 499}, {"from": 469, "to": 350}, {"from": 469, "to": 468}, {"from": 469, "to": 340}, {"from": 469, "to": 346}, {"from": 469, "to": 302}, {"from": 469, "to": 465}, {"from": 353, "to": 350}, {"from": 353, "to": 478}, {"from": 353, "to": 415}, {"from": 353, "to": 458}, {"from": 353, "to": 340}, {"from": 353, "to": 346}, {"from": 353, "to": 348}, {"from": 353, "to": 341}, {"from": 350, "to": 302}, {"from": 350, "to": 338}, {"from": 350, "to": 352}, {"from": 350, "to": 348}, {"from": 350, "to": 410}, {"from": 350, "to": 499}, {"from": 350, "to": 340}, {"from": 350, "to": 346}, {"from": 350, "to": 341}, {"from": 302, "to": 193}, {"from": 302, "to": 421}, {"from": 302, "to": 340}, {"from": 302, "to": 16}, {"from": 302, "to": 352}, {"from": 302, "to": 346}, {"from": 302, "to": 415}, {"from": 302, "to": 490}, {"from": 302, "to": 478}, {"from": 302, "to": 293}, {"from": 302, "to": 286}, {"from": 302, "to": 287}, {"from": 302, "to": 502}, {"from": 302, "to": 337}, {"from": 338, "to": 503}, {"from": 338, "to": 340}, {"from": 338, "to": 346}, {"from": 348, "to": 293}, {"from": 348, "to": 340}, {"from": 348, "to": 346}, {"from": 478, "to": 421}, {"from": 478, "to": 467}, {"from": 478, "to": 352}, {"from": 478, "to": 499}, {"from": 478, "to": 481}, {"from": 478, "to": 495}, {"from": 478, "to": 16}, {"from": 478, "to": 304}, {"from": 478, "to": 415}, {"from": 478, "to": 498}, {"from": 478, "to": 340}, {"from": 478, "to": 346}, {"from": 478, "to": 193}, {"from": 478, "to": 465}, {"from": 478, "to": 337}, {"from": 287, "to": 286}, {"from": 287, "to": 340}, {"from": 287, "to": 346}, {"from": 287, "to": 231}, {"from": 287, "to": 293}, {"from": 287, "to": 291}, {"from": 287, "to": 295}, {"from": 287, "to": 296}, {"from": 287, "to": 290}, {"from": 488, "to": 499}, {"from": 488, "to": 467}, {"from": 373, "to": 346}, {"from": 373, "to": 492}, {"from": 346, "to": 410}, {"from": 346, "to": 421}, {"from": 346, "to": 193}, {"from": 346, "to": 293}, {"from": 346, "to": 490}, {"from": 346, "to": 340}, {"from": 346, "to": 16}, {"from": 346, "to": 341}, {"from": 346, "to": 352}, {"from": 346, "to": 347}, {"from": 346, "to": 371}, {"from": 346, "to": 502}, {"from": 481, "to": 502}, {"from": 347, "to": 293}, {"from": 347, "to": 340}, {"from": 347, "to": 393}, {"from": 352, "to": 499}, {"from": 352, "to": 340}, {"from": 421, "to": 340}, {"from": 421, "to": 438}, {"from": 421, "to": 428}, {"from": 421, "to": 429}, {"from": 421, "to": 430}, {"from": 421, "to": 433}, {"from": 421, "to": 437}, {"from": 421, "to": 16}, {"from": 421, "to": 432}, {"from": 421, "to": 439}, {"from": 421, "to": 446}, {"from": 421, "to": 453}, {"from": 421, "to": 455}, {"from": 421, "to": 416}, {"from": 421, "to": 415}, {"from": 421, "to": 458}, {"from": 421, "to": 462}, {"from": 421, "to": 502}, {"from": 32, "to": 37}, {"from": 32, "to": 183}, {"from": 32, "to": 69}, {"from": 37, "to": 68}, {"from": 183, "to": 69}, {"from": 40, "to": 55}, {"from": 40, "to": 75}, {"from": 55, "to": 132}, {"from": 55, "to": 140}, {"from": 55, "to": 148}, {"from": 55, "to": 170}, {"from": 50, "to": 187}, {"from": 50, "to": 132}, {"from": 187, "to": 132}, {"from": 187, "to": 141}, {"from": 187, "to": 160}, {"from": 54, "to": 155}, {"from": 54, "to": 68}, {"from": 54, "to": 139}, {"from": 54, "to": 145}, {"from": 54, "to": 206}, {"from": 132, "to": 29}, {"from": 132, "to": 147}, {"from": 132, "to": 41}, {"from": 132, "to": 160}, {"from": 132, "to": 141}, {"from": 140, "to": 41}, {"from": 170, "to": 152}, {"from": 29, "to": 147}, {"from": 147, "to": 41}, {"from": 141, "to": 58}, {"from": 141, "to": 160}, {"from": 160, "to": 120}, {"from": 160, "to": 121}, {"from": 160, "to": 166}, {"from": 160, "to": 193}, {"from": 160, "to": 115}, {"from": 160, "to": 58}, {"from": 160, "to": 174}, {"from": 68, "to": 139}, {"from": 410, "to": 340}, {"from": 72, "to": 136}, {"from": 30, "to": 119}, {"from": 162, "to": 127}, {"from": 184, "to": 193}, {"from": 48, "to": 180}, {"from": 180, "to": 168}, {"from": 180, "to": 172}, {"from": 168, "to": 172}, {"from": 78, "to": 172}, {"from": 172, "to": 173}, {"from": 172, "to": 179}, {"from": 173, "to": 179}, {"from": 193, "to": 340}, {"from": 193, "to": 21}, {"from": 193, "to": 45}, {"from": 193, "to": 56}, {"from": 193, "to": 61}, {"from": 193, "to": 73}, {"from": 193, "to": 90}, {"from": 193, "to": 113}, {"from": 193, "to": 117}, {"from": 193, "to": 120}, {"from": 193, "to": 121}, {"from": 193, "to": 126}, {"from": 193, "to": 133}, {"from": 193, "to": 135}, {"from": 193, "to": 143}, {"from": 193, "to": 166}, {"from": 193, "to": 174}, {"from": 193, "to": 177}, {"from": 193, "to": 182}, {"from": 193, "to": 189}, {"from": 193, "to": 199}, {"from": 193, "to": 16}, {"from": 193, "to": 502}, {"from": 293, "to": 340}, {"from": 293, "to": 337}, {"from": 498, "to": 340}, {"from": 498, "to": 499}, {"from": 498, "to": 495}, {"from": 498, "to": 497}, {"from": 498, "to": 490}, {"from": 498, "to": 502}, {"from": 499, "to": 340}, {"from": 499, "to": 502}, {"from": 499, "to": 495}, {"from": 499, "to": 490}, {"from": 499, "to": 503}, {"from": 499, "to": 491}, {"from": 340, "to": 503}, {"from": 340, "to": 490}, {"from": 340, "to": 73}, {"from": 340, "to": 16}, {"from": 340, "to": 260}, {"from": 340, "to": 341}, {"from": 340, "to": 415}, {"from": 503, "to": 299}, {"from": 21, "to": 121}, {"from": 21, "to": 133}, {"from": 21, "to": 144}, {"from": 27, "to": 192}, {"from": 28, "to": 71}, {"from": 45, "to": 73}, {"from": 45, "to": 188}, {"from": 45, "to": 189}, {"from": 45, "to": 77}, {"from": 73, "to": 56}, {"from": 73, "to": 117}, {"from": 73, "to": 125}, {"from": 73, "to": 126}, {"from": 73, "to": 135}, {"from": 73, "to": 182}, {"from": 73, "to": 188}, {"from": 73, "to": 189}, {"from": 73, "to": 36}, {"from": 73, "to": 70}, {"from": 188, "to": 125}, {"from": 188, "to": 189}, {"from": 188, "to": 24}, {"from": 189, "to": 125}, {"from": 189, "to": 24}, {"from": 189, "to": 77}, {"from": 90, "to": 109}, {"from": 90, "to": 112}, {"from": 63, "to": 65}, {"from": 117, "to": 70}, {"from": 113, "to": 144}, {"from": 121, "to": 67}, {"from": 121, "to": 143}, {"from": 121, "to": 169}, {"from": 121, "to": 133}, {"from": 121, "to": 190}, {"from": 121, "to": 144}, {"from": 121, "to": 105}, {"from": 133, "to": 143}, {"from": 133, "to": 177}, {"from": 133, "to": 144}, {"from": 143, "to": 190}, {"from": 143, "to": 144}, {"from": 143, "to": 91}, {"from": 153, "to": 71}, {"from": 260, "to": 275}, {"from": 260, "to": 262}, {"from": 260, "to": 263}, {"from": 260, "to": 264}, {"from": 260, "to": 266}, {"from": 260, "to": 267}, {"from": 260, "to": 270}, {"from": 260, "to": 276}, {"from": 260, "to": 277}, {"from": 428, "to": 438}, {"from": 220, "to": 231}, {"from": 231, "to": 234}, {"from": 231, "to": 221}, {"from": 231, "to": 237}, {"from": 231, "to": 238}, {"from": 231, "to": 243}, {"from": 234, "to": 221}, {"from": 234, "to": 239}, {"from": 234, "to": 243}, {"from": 221, "to": 237}, {"from": 221, "to": 238}, {"from": 211, "to": 243}, {"from": 211, "to": 216}, {"from": 237, "to": 216}, {"from": 238, "to": 224}, {"from": 238, "to": 244}, {"from": 238, "to": 502}, {"from": 239, "to": 216}, {"from": 233, "to": 225}, {"from": 243, "to": 236}, {"from": 243, "to": 244}, {"from": 216, "to": 236}, {"from": 430, "to": 432}, {"from": 16, "to": 502}, {"from": 16, "to": 8}, {"from": 16, "to": 490}, {"from": 16, "to": 492}, {"from": 16, "to": 337}, {"from": 415, "to": 502}, {"from": 415, "to": 413}, {"from": 458, "to": 355}, {"from": 502, "to": 467}, {"from": 502, "to": 339}, {"from": 502, "to": 465}, {"from": 502, "to": 337}, {"from": 467, "to": 495}, {"from": 495, "to": 497}, {"from": 490, "to": 465}, {"from": 490, "to": 337}, {"from": 3, "to": 4}, {"from": 3, "to": 2}, {"from": 3, "to": 5}, {"from": 3, "to": 6}, {"from": 4, "to": 2}, {"from": 4, "to": 5}, {"from": 2, "to": 6}, {"from": 2, "to": 5}, {"from": 5, "to": 6}, {"from": 468, "to": 491}, {"from": 491, "to": 465}, {"from": 491, "to": 337}, {"from": 8, "to": 9}, {"from": 8, "to": 7}, {"from": 8, "to": 18}, {"from": 9, "to": 7}, {"from": 310, "to": 309}, {"from": 136, "to": 109}, {"from": 67, "to": 115}, {"from": 67, "to": 169}, {"from": 11, "to": 18}, {"from": 18, "to": 12}, {"from": 18, "to": 15}, {"from": 337, "to": 492}, {"from": 465, "to": 492}, {"from": 291, "to": 296}, {"from": 291, "to": 290}, {"from": 296, "to": 290}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
